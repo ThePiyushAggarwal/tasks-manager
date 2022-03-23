@@ -1,46 +1,67 @@
 import { useState } from 'react'
-// import Form from './components/Form'
-
-// import List from './components/List'
 
 function App() {
-  const [todo, setTodo] = useState([
+  const [value, setValue] = useState('')
+  const [todos, setTodos] = useState([
     {
-      id: 1,
       task: "Do this thing right before you don't do another thing",
+      isCompleted: true,
     },
     {
-      id: 2,
-      task: "o this thing right before you don't do another thing",
+      task: "this thing right before you don't do another thing, you know what i mean?",
+      isCompleted: false,
     },
   ])
 
   const onSubmit = (e) => {
     e.preventDefault()
-    console.log(123)
+    if (!value) return
+    setTodos([...todos, { task: value, isCompleted: false }])
+    setValue('')
   }
 
-  const onChange = (e) => {
-    const ji = { id: 12, task: e.target.value }
-    setTodo(...todo, ji)
+  const completeTask = (index) => {
+    const temp = [...todos]
+    if (temp[index].isCompleted) {
+      temp[index].isCompleted = false
+    } else {
+      temp[index].isCompleted = true
+    }
+    setTodos(temp)
+  }
+
+  const deleteTask = (index) => {
+    const temp = [...todos]
+    temp.splice(index, 1)
+    setTodos(temp)
   }
 
   return (
     <div className="container">
       <ul>
-        {todo.map((item, index) => (
-          <li key={index}> {item.task}</li>
+        {todos.map((item, index) => (
+          <li
+            key={index}
+            style={{ textDecoration: item.isCompleted ? 'line-through' : '' }}
+          >
+            {item.task}
+            <button onClick={() => completeTask(index)}>
+              Mark Complete
+            </button>{' '}
+            <button onClick={() => deleteTask(index)}>Delete</button>
+          </li>
         ))}
       </ul>
 
       <form>
-        <input type="text" onChange={onChange} />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
         <br />
         <button onClick={onSubmit}>Add Task</button>
       </form>
-
-      {/* <List list={todo} /> */}
-      {/* <Form onSubmit={onSubmit} onChange={onChange} /> */}
     </div>
   )
 }
